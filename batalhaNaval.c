@@ -1,47 +1,73 @@
 #include <stdio.h>
 
+// Função para aplicar habilidades
+void aplicarHabilidade(char tabuleiro[10][10], int *habilidade, int linhas, int cols, int linha_centro, int coluna_centro, char marca) {
+    int inicio_linha = linha_centro - (linhas / 2);
+    int inicio_coluna = coluna_centro - (cols / 2);
+    
+    for (int i = 0; i < linhas; i++) {
+        for (int j = 0; j < cols; j++) {
+            if (*(habilidade + i*cols + j) == 1) {
+                if ((inicio_linha + i) >= 0 && (inicio_linha + i) < 10 &&
+                    (inicio_coluna + j) >= 0 && (inicio_coluna + j) < 10) {
+                    tabuleiro[inicio_linha + i][inicio_coluna + j] = marca;
+                }
+            }
+        }
+    }
+}
 
 int main() {
-    char tabuleiro[10][10]; // Matriz para o tabuleiro
-
+    char tabuleiro[10][10];
+    
+    // Inicializa com água
     for (int i = 0; i < 10; i++) {
         for (int j = 0; j < 10; j++) {
             tabuleiro[i][j] = '0';
         }
     }
-    //posicionar Navio no tabuleiro
-    //navio 1
-    tabuleiro[2][3] = '3';
-    tabuleiro[2][4] = '3';
-    tabuleiro[2][5] = '3';
-    //navio 2
-    tabuleiro[5][1] = '3';
-    tabuleiro[6][1] = '3';
-    tabuleiro[7][1] = '3';
-    // navios diagonais
-    tabuleiro[7][5] = '3';
-    tabuleiro[6][6] = '3';
-    tabuleiro[5][7] = '3';
 
-    tabuleiro[3][1] = '3';
-    tabuleiro[4][2] = '3';
-    tabuleiro[5][3] = '3';
+    // Define as habilidades
+    int cone[3][5] = {
+        {0,0,1,0,0},
+        {0,1,1,1,0},
+        {1,1,1,1,1}
+    };
 
-    printf("Tabuleiro Naval:\n");
-    printf(" A B C D E F G H I J\n");
+    int cruz[5][5] = {
+        {0,0,1,0,0},
+        {0,0,1,0,0},
+        {1,1,1,1,1},
+        {0,0,1,0,0},
+        {0,0,1,0,0}
+    };
 
-    for(int i = 0; i < 10; i++) {
+    int octaedro[3][3] = {
+        {0,1,0},
+        {1,1,1},
+        {0,1,0}
+    };
 
-        printf("%d ", i);
-        for(int j = 0; j < 10; j++) {
+    // Aplica as habilidades em posições separadas
+    aplicarHabilidade(tabuleiro, (int *)cone, 3, 5, 2, 3, '1');    // Cone no canto superior esquerdo
+    aplicarHabilidade(tabuleiro, (int *)cruz, 5, 5, 6, 6, '2');    // Cruz no centro-direito
+    aplicarHabilidade(tabuleiro, (int *)octaedro, 3, 3, 8, 8, '4'); // Octaedro no canto inferior direito
+
+    // Mostra o tabuleiro
+    printf("   A B C D E F G H I J\n");
+    for (int i = 0; i < 10; i++) {
+        printf("%d  ", i);
+        for (int j = 0; j < 10; j++) {
             printf("%c ", tabuleiro[i][j]);
         }
         printf("\n");
     }
     
-    
-
-    
+    printf("\nLegenda:\n");
+    printf("0 - Água\n");
+    printf("1 - Cone (3x5) - Topo esquerdo\n");
+    printf("2 - Cruz (5x5) - Centro-direito\n");
+    printf("4 - Octaedro (3x3) - Canto inferior direito\n");
 
     return 0;
 }
